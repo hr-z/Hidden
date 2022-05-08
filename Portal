@@ -1,0 +1,75 @@
+import greenfoot.*;
+public class Portal extends Actor
+{
+    //declare variables
+    private GreenfootImage[] portal = new GreenfootImage[6];
+    private int active = 0;
+    private static final int delayActive = 7;
+    private int actImg = 0;
+    private int trans = 0;
+    private boolean reachHero = false;
+    //constructor that loads the images and holds a parameter for 
+    //setting the default transparency
+    public Portal(int transp){
+        for (int i = 0; i < portal.length; i++){
+            portal[i] = new GreenfootImage("Portal" + i + ".png");
+            portal[i].scale(100,100);
+            portal[i].setTransparency(transp);
+        }
+        setImage(portal[0]);
+    }
+    /**
+     * Act - do whatever the Portal wants to do. This method is called whenever
+     * the 'Act' or 'Run' button gets pressed in the environment.
+     */
+    public void act() 
+    {
+        // Add your action code here.
+        acting();
+        reduceTrans();
+        
+    }    
+    //switch the images in arrays, to make the portal animated
+    public void acting(){
+        active = active + 1;
+        if (active == delayActive){
+            actImg++;
+            if (actImg >= portal.length){
+                actImg = 0;
+            }
+            setImage(portal[actImg]);
+            active = 0;
+        }
+    }
+    //method for gradually reducing transparency
+    public void reduceTrans(){
+        trans = trans - 5;
+        if (trans < 0 ){
+            trans = 0;
+        }
+        getImage().setTransparency(trans);
+    }
+    //mutator for gradually increasing transparency (used in Level1 and Hero)
+    public void increaseTrans(){
+        trans = trans + 10;
+        if (trans > 255){
+            trans = 255;
+        }
+        getImage().setTransparency(trans);
+    }
+    //mutator called by world Level1 if the actor chooses the right one
+    public void rightChoice(){
+        setRotation(270);
+        setLocation(getX(),getY()+1);
+        
+    }
+    //accessor called by world Level1 if the portal touches actor
+    public boolean reachHero(){
+        if (isTouching(Hero.class)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+}
