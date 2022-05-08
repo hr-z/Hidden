@@ -1,0 +1,27 @@
+import greenfoot.*;
+public class Key extends Actor
+{
+    public boolean hasKey = false;
+    //set the image of key
+    public Key(){
+        GreenfootImage key = new GreenfootImage("key.png");
+        key.scale(50,50);
+        setImage(key);
+    }
+    /**
+     * Act - do whatever the Key wants to do. This method is called whenever
+     * the 'Act' or 'Run' button gets pressed in the environment.
+     */
+    public void act() 
+    {
+        // Add your action code here.
+        follow();
+    }    
+    // follows hero if it touches him
+    public void follow(){
+        Hero h = (Hero)getOneIntersectingObject(Hero.class);
+        if (h != null ){
+            setLocation(h.getX(),h.getY()+10);
+        }
+    }
+}
