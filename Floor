@@ -1,0 +1,8 @@
+import greenfoot.*; 
+public class Floor extends Actor
+{
+    //a constructor which allows programmer to set the size of floor
+    public Floor(int x,int y){
+        getImage().scale(x,y);
+    }
+}
