@@ -1,0 +1,30 @@
+import greenfoot.*;
+import java.util.List;
+public class Mouse extends Actor
+{
+    private MouseInfo mouse = Greenfoot.getMouseInfo();
+    //set the default image (which is transparent)
+    public Mouse(){
+        GreenfootImage img = new GreenfootImage(1,1);
+        img.setTransparency(0);
+        setImage(img);
+    }
+    /**
+     * Act - do whatever the Mouse wants to do. This method is called whenever
+     * the 'Act' or 'Run' button gets pressed in the environment.
+     */
+    public void act() 
+    {
+        // Add your action code here.
+        //this object follows the cursor if the cursor is moved.
+        if (Greenfoot.mouseMoved(null)){
+            MouseInfo mouse = Greenfoot.getMouseInfo();
+            setLocation(mouse.getX(),mouse.getY());
+        }
+        //the objects in Glowing class appears if the cursor is near them
+        List<Glowing>g = getObjectsInRange(50,Glowing.class);
+        for (Glowing gl : g){
+            gl.increaseTrans();
+        }
+    }    
+}
