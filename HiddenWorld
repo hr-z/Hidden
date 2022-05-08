@@ -1,0 +1,29 @@
+import greenfoot.*;
+
+public class HiddenWorld extends World
+{
+    private Chest c = new Chest();
+    private boolean showText = false;
+    public HiddenWorld()
+    {    
+           // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
+        //build the hidden world
+        super(600, 400, 1); 
+        Hero h = new Hero();
+        addObject(h,600,0);
+        addObject(new Floor(600,20),300,360);
+        addObject(c,200,330);
+        addObject(new Key(),h.getX(),h.getY()+10);
+        addObject(new Note(0),300,40);
+        
+    }
+    public void act(){
+        //display notes if the chest is opened
+        if( c.opened() && !showText){
+            removeObject(c);
+            addObject(new Note(3),300,300);
+            addObject(new Note(4),300,160);
+            showText = true;
+        }
+    }
+}
