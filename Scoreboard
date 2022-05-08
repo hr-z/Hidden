@@ -1,0 +1,28 @@
+import greenfoot.*;
+import java.util.List;
+public class Scoreboard extends Actor
+{
+    private int points;
+    
+    private GreenfootImage img;
+    //set the default label and score counts of scoreboard
+    public Scoreboard(){
+        points = 0;
+        GreenfootImage img = new GreenfootImage("Score: " + points,20,Color.WHITE,null);
+        setImage(img);
+    }
+    
+    //mutator that sets the new score ,called by MyWorld
+    public void addScore(int amount) 
+    {
+        
+        points = points + amount;
+        GreenfootImage img = getImage();
+        img.clear();
+        img = new GreenfootImage("Score: " + points,20,Color.WHITE,null);
+        setImage(img);
+        
+        
+    }
+    
+}
