@@ -1,0 +1,154 @@
+import greenfoot.*; 
+public class Monster extends Actor
+{
+    //Declare variables, including images for animation, variables
+    //for jumping
+    private GreenfootImage[] flyingMo = new GreenfootImage[4];
+    private GreenfootImage[] demonRun = new GreenfootImage[4];
+    private GreenfootImage demonIdle = new GreenfootImage("big_demon_idle_anim_f0.png");
+    private int active = 0;
+    private static final int delayActive = 10;
+    private int actImg = 0;
+    private int vXFly;
+    private int vYFly;
+    private int flyCounter = 0;
+    private int image;
+    private int moType;
+    private int vDrop = 1;
+    private int acceleration = 1;
+    private int vJump = 8;
+    private boolean hasJumped = false;
+    private int randomJump;
+    private int points;
+    //Constructor with parameter, in order to determine which monster is added
+    public Monster(String type){
+        for (int i=0; i < flyingMo.length; i++){
+            flyingMo[i] = new GreenfootImage("monI-" + i + ".png");
+            flyingMo[i].scale(50,50);
+        }
+        for (int j=0; j < demonRun.length; j++){
+            demonRun[j] = new GreenfootImage("big_demon_run_anim_f" + j + ".png");
+            demonRun[j].mirrorHorizontally();
+        }
+        //set points and type of each monster
+        if (type == "fly"){
+            setImage(flyingMo[0]);
+            moType = 0;
+            points = 2;
+        }
+        else{
+            demonIdle.mirrorHorizontally();
+            setImage(demonIdle);
+            moType = 1;
+            points = 1;
+        }
+    }
+    //an accessor for Hero class and Life class to determine the
+    //point should be added
+    public int score(){
+        return points;
+    }
+    /**
+     * Act - do whatever the Monster wants to do. This method is called whenever
+     * the 'Act' or 'Run' button gets pressed in the environment.
+     */
+    public void act() 
+    {
+        // Add your action code here.
+        //if monster is a flying type, call fly() function
+        if (moType == 0){
+            fly();
+        }
+        //else it is a walking monster with jumping ability
+        else{
+            checkOnGround();
+            fall();
+            action();
+        }
+        //remove it if monster is at edge
+        if (isAtEdge()) {
+            getWorld().removeObject(this);
+        }
+        
+    }  
+    //make the flying monster fly with a certain routine
+    public void fly(){
+        setLocation(getX()+vXFly,getY()+vYFly);
+        if(getX() == 70 && getY() == 134){
+            vXFly = 1;
+            vYFly = 0;
+        }
+        if(getX() == 270 && getY() == 134){
+            vXFly = -1;
+            vYFly = 1;
+        }
+        if(getX() == 200 && getY() == 204){
+            vXFly = -1;
+            vYFly = -1;
+        }
+        if(getX() == 70 && getY() == 74){
+            vXFly = 0;
+            vYFly = 1;
+        }
+        active++;
+        if(active == delayActive){
+            if (actImg >= flyingMo.length){
+                actImg = 0;
+            }
+            setImage(flyingMo[actImg]);
+            actImg++;
+            active = 0;
+        }
+    }
+    //returns a boolean to tell if the actor is on the floor
+    public boolean touchingFloor(){
+        Floor f = (Floor)getOneObjectAtOffset(0,getImage().getHeight()/2,Floor.class);
+        if (f != null){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    //create 'gravity', to make actor always fall
+    public void fall(){
+        setLocation(getX(),getY()+vDrop);
+        vDrop = vDrop + acceleration;
+    }
+    //but if it touches floor, make it not fall
+    public void checkOnGround(){
+        if(touchingFloor()){
+            vDrop = 0;
+            hasJumped = false;
+        }
+        else{
+            fall();
+        }
+    }
+    //change the drop speed to make the actor jump upward, 
+    //make it not jump again using the boolean
+    public void jump(){
+        vDrop = -vJump;
+        hasJumped = true;
+        fall();
+    }
+    //make the monster 'alive'
+    public void action(){
+        active++;
+        randomJump = Greenfoot.getRandomNumber(200);
+        setLocation(getX()-1,getY());
+        if(active == delayActive){
+            if (actImg >= demonRun.length){
+                actImg = 0;
+            }
+            setImage(demonRun[actImg]);
+            actImg++;
+            active = 0;
+        }
+        //jump only with certain possibility
+        if (randomJump  < 2){
+            jump();
+        }
+    }
+    
+}
