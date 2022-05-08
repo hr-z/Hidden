@@ -1,0 +1,58 @@
+import greenfoot.*;
+public class Glowing extends Actor
+{
+    private int trans = 0;
+    
+    public Glowing(int type){
+        //make the start button also a glowing particle
+        if (type == 0){
+            GreenfootImage img = new GreenfootImage("Start",50,Color.WHITE,null);
+            img.setTransparency(0);
+            setImage(img);
+        }
+        else{
+            GreenfootImage gf = new GreenfootImage(5,5);
+            int r =Greenfoot.getRandomNumber(256);
+            int g = Greenfoot.getRandomNumber(256);
+            int b =Greenfoot.getRandomNumber(256);
+            Color c = new Color(r,g,b);
+            gf.setColor(c);
+            gf.setTransparency(0);
+            gf.fillOval(0,0,5,5);
+            setImage(gf);
+        }
+        
+    }
+    /**
+     * Act - do whatever the Glowing wants to do. This method is called whenever
+     * the 'Act' or 'Run' button gets pressed in the environment.
+     */
+    public void act() 
+    {
+        // Add your action code here.
+        //always reduce the trans so it seems dissappeared
+        reduceTrans();
+        clicked();
+    }   
+    //mutator for Mouse class to make the particles glow
+    public void increaseTrans(){
+        trans = 255;
+    }
+    //gradually reduce the transparency
+    public void reduceTrans()
+    {
+        trans = trans-5;
+        if(trans < 0)
+        {
+            trans =0;
+        }
+        getImage().setTransparency(trans);
+    }
+    //go to the first level in the game if start button is clicked
+    public void clicked(){
+        MouseInfo mouse = Greenfoot.getMouseInfo();
+        if (Greenfoot.mouseClicked(this)){
+            Greenfoot.setWorld(new Level0());
+        }
+    }
+}
