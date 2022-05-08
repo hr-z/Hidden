@@ -1,0 +1,35 @@
+import greenfoot.*;
+public class Chest extends Actor
+{
+    //declare variables and load images
+    private GreenfootImage open = new GreenfootImage("boxopen.png");
+    private GreenfootImage close = new GreenfootImage("box.png");
+    private boolean opened;
+    //resize the images and set the default close chest image
+    public Chest(){
+        
+        close.scale(60,60);
+        open.scale(60,60);
+        setImage(close);
+    }
+    /**
+     * Act - do whatever the Chest wants to do. This method is called whenever
+     * the 'Act' or 'Run' button gets pressed in the environment.
+     */
+    public void act() 
+    {
+        // Add your action code here.
+        //opens the chest if hero has a key and touches the chest
+        Hero h = (Hero)getOneIntersectingObject(Hero.class);
+        if (h!=null && h.open()){
+            setImage(open);
+            removeTouching(Key.class);
+            opened = true;
+        }
+        
+    }  
+    //accessor for HiddenWorld to determine the text displayed
+    public boolean opened(){
+        return opened;
+    }
+}
