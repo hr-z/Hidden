@@ -1,0 +1,67 @@
+import greenfoot.*;  
+public class Note extends Actor
+{
+    //declare variables
+    private GreenfootImage img;
+    private int health;
+    private int happiness;
+    private boolean happier = false;
+    private boolean healthier = false;
+    //sets different notes according to the number put in the parameter
+    public Note(int result){
+        if(result == 1){
+            GreenfootImage bg = new GreenfootImage("space.jpg");
+            GreenfootImage img = new GreenfootImage("'go right'\n next time!",50,Color.PINK,null);
+            setImage(img);
+            
+        }
+        else if (result == 2){
+            GreenfootImage img = new GreenfootImage("Congratulations!\n Wait...\n What is the Key for?",40,Color.WHITE,null);
+            setImage(img);
+        }
+        else if (result == 0){
+            GreenfootImage img = new GreenfootImage("Hidden World!",40,Color.WHITE,null);
+            setImage(img);
+        }
+        else if (result == 3){
+            GreenfootImage img = new GreenfootImage("Health: " + health +"\nHappiness: "+happiness,40,Color.WHITE,null);
+            setImage(img);
+            healthier = true;
+            happier = true;
+        }
+        else if (result == 4){
+            String s = "Hi gamer! \nJust want to wish you \n healthier and happier, \n especially during this special time. \n Thank you for playing my game!";
+            GreenfootImage img = new GreenfootImage(s,40,Color.PINK,null);
+            setImage(img);
+        }
+        else if (result == 5){
+            GreenfootImage img = new GreenfootImage("Score doesn't matters..\nAnd of course you have only one life :)\n Left or Right",40,Color.WHITE,null);
+            setImage(img);
+        }
+        
+        else if (result == 7){
+            GreenfootImage img = new GreenfootImage("Hint: What will you achieve in your 'life' ? \n Falling doesn't make you fail\n(Level 0)",30,Color.PINK,null);
+            setImage(img);
+        }
+    }
+    /**
+     * Act - do whatever the Note wants to do. This method is called whenever
+     * the 'Act' or 'Run' button gets pressed in the environment.
+     */
+    public void act() 
+    {
+        // Add your action code here.
+        //if the text is displayed health and happiness, constantly
+        //increase their numbers displayed after the labels
+        if(healthier == true && happier == true){
+            health++;
+            happiness++;
+            GreenfootImage img = getImage();
+            img.clear();
+            img = new GreenfootImage("Health: " + health +"\nHappiness: "+happiness,40,Color.WHITE,null);
+            setImage(img);
+            
+        }
+    }  
+    
+}
