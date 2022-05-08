@@ -1,0 +1,10 @@
+import greenfoot.*;
+public class Final extends Actor
+{
+    //set the background for every result(right choice, wrong choice)
+    public Final(){
+        GreenfootImage bg = new GreenfootImage("space.jpg");
+        setImage(bg);
+    }
+       
+}
