@@ -1,0 +1,40 @@
+import greenfoot.*;
+public class Level0 extends World
+{
+    private Scoreboard score;
+    private Life life;
+    private Hero hero;
+    public Level0()
+    {   
+        //build the first scene of the game
+        super(600, 400, 1);
+        hero = new Hero();
+        addObject(hero,100,300);
+        addObject(new Portal(0),558,60);
+        addObject(new Floor(120,20),80,350);
+        addObject(new Floor(140,20),400,350);
+        addObject(new Floor(120,20),520,350);
+        addObject(new Floor(120,20),240,380);
+        addObject(new Floor(120,20),330,240);
+        addObject(new Floor(120,20),420,120);
+        addObject(new Floor(120,20),375,180);
+        addObject(new Floor(120,20),270,300);
+        addObject(new Monster("fly"), 70,134);
+        addObject(new Monster("walk"),520,300);
+        addObject(new Monster("walk"),420,80);
+        addObject(new Key(),240,350);
+        score = new Scoreboard();
+        addObject(score,50,50);
+        life = new Life(5);
+        addObject(life,550,380);
+    }
+    //mutator for hero class to change score
+    public void updateScore(int amount){
+        score.addScore(amount);
+    }
+    //called the mutator in Life class to change life
+    public void act(){
+        life.updateLife();
+    
+    }
+}
