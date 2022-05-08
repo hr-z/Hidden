@@ -1,0 +1,28 @@
+import greenfoot.*;  
+import java.util.List;
+public class Life extends Actor
+{
+    private int lives;
+    private GreenfootImage img;
+    //set the default life count (which depends on the int in the parameter)
+    //of the character
+    public Life(int amount){
+        lives = amount;
+        GreenfootImage img = new GreenfootImage("Life: " + lives,20,Color.WHITE,null);
+        setImage(img);
+    }
+    //get hero's life and set the new life count of him
+    public void updateLife() 
+    {
+        // Add your action code here.
+        List<Hero>he = getWorld().getObjects(Hero.class);
+        for (Hero h : he){
+            lives = h.lives();
+            GreenfootImage img = getImage();
+            img.clear();
+            img = new GreenfootImage("Life: " + lives,20,Color.WHITE,null);
+            setImage(img);
+
+        }
+    }    
+}
