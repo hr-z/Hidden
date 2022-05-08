@@ -1,0 +1,24 @@
+import greenfoot.*;
+public class Start extends World
+{
+
+    //set the dark background of start screen 
+    public Start()
+    {    
+        super(600, 400, 1); 
+        GreenfootImage bg = new GreenfootImage(600,400);
+        bg.fill();
+        setBackground(bg);
+        addGlow(300);
+        addObject(new Mouse(), 0, 0);
+        addObject(new Glowing(0), getWidth()-50,20);
+    }
+    //add n amount of glowing particles at random position
+    public void addGlow(int n){
+        for(int i=0; i<n; i++) {
+            int x = Greenfoot.getRandomNumber(getWidth());
+            int y = Greenfoot.getRandomNumber(getHeight());
+            addObject(new Glowing(1),x,y);
+        }
+    }
+}
