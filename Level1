@@ -1,0 +1,94 @@
+import greenfoot.*;  
+import java.util.List;
+public class Level1 extends World
+{
+    //get pointers and declare variables
+    private Scoreboard score;
+    private Life life;
+    private Hero h;
+    private Portal p;
+    
+    private int counter = 0;
+    private int addM = 0;
+    public Level1()
+    {    
+       // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
+       //add objects to create the second scene 
+       super(600, 400, 1);
+        addObject(new Note(5),300,80);
+        Hero h = new Hero();
+        addObject(h,300,60);
+        addObject(new Floor(150,20),300,200);
+        addObject(new Floor(150,20),200,300);
+        addObject(new Floor(150,20),400,300);
+        addObject(new Floor(100,20),100,400);
+        addObject(new Floor(100,20),500,400);
+        addObject(new Key(),h.getX(),h.getY()+10);
+        Portal p = new Portal(0);
+        addObject(p,500,-100);
+        score = new Scoreboard();
+        addObject(score,50,50);
+        life = new Life(1);
+        addObject(life,45,65);
+        
+    }
+    public void act(){
+        wrongChoice();
+        rightChoice();
+    }
+    
+    public void wrongChoice(){
+        //if the actor is in this specified cell
+        if (!getObjectsAt(100,350,Hero.class).isEmpty()){
+            for(Hero h : getObjects(Hero.class)){
+                int addMo = Greenfoot.getRandomNumber(100);
+                //add obstacles
+                if (addM == 0){
+                    addObject(new Floor(10,30),60,370);
+                    addObject(new Floor(10,30),150,370);
+                    
+                }
+                //disable hero
+                h.blocked();
+                //add monsters by chance
+                if (addMo < 50 && addM == 0){
+                    addObject(new Monster("walk"),100,50);
+                }
+                
+            }
+            
+            counter++;
+            life.updateLife();
+            //after a certain time, goes to the final screen, with
+            //appointed notes displayed
+            if(counter == 150){
+                addM = 1;
+                addObject(new Final(),300,200);
+                addObject(new Note(1),300,170);
+                
+            }
+            
+        }
+    }
+    
+    public void rightChoice(){
+        //if the actor is in this specified cell (success)
+        if(!getObjectsAt(500,350,Hero.class).isEmpty()){
+            for (Portal p : getObjects(Portal.class)){
+                //make the portal appear and reach hero
+                p.rightChoice();
+                p.increaseTrans();
+                //if it reaches hero, goes to the final screen, with
+                //appointed notes displayed
+                if (p.reachHero()){
+                    removeObject(p);
+                    addObject(new Final(),300,200);
+                    addObject(new Note(2),300,100);
+                    addObject(new Note(7),300,250);
+                }
+            }
+            
+        }
+        
+    }
+}
