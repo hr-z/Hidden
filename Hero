@@ -1,0 +1,301 @@
+import greenfoot.*;  
+import java.util.List;
+public class Hero extends Actor
+{
+    //Declare variables, including images for animation, variables
+    //for jumping, and other booleans that determine 
+    //further function 
+    private GreenfootImage[] idle = new GreenfootImage[7];
+    private GreenfootImage[] idle_mirror = new GreenfootImage[7];
+    private GreenfootImage[] idle_m = new GreenfootImage[7];
+    private GreenfootImage[] left = new GreenfootImage[8];
+    private GreenfootImage[] left_m = new GreenfootImage[8];
+    private GreenfootImage[] right = new GreenfootImage[8];
+    private GreenfootImage[] leftAttack = new GreenfootImage[10];
+    private GreenfootImage[] rightAttack = new GreenfootImage[10];
+    private int active = 0;
+    private static final int delayActive = 7;
+    private int actImg = 0;
+    private int moveLeft = 0;
+    private static final int delayLeft = 7;
+    private int leftImg = 0;
+    private int moveRight = 0;
+    private static final int delayRight = 7;
+    private int rightImg = 0;
+    private int attackRight = 0;
+    private static final int delayAttackRight = 3;
+    private int rightAttackImg = 0;
+    private int attackLeft = 0;
+    private static final int delayAttackLeft = 3;
+    private int leftAttackImg = 0;
+    private int vX = 2;
+    private int vDrop = 1;
+    private int acceleration = 1;
+    private int vJump = 15;
+    private boolean hasJumped = false;
+    private boolean faceLeft = false;
+    private boolean ePressed = false;
+    private boolean qPressed = false;
+    private boolean level1 = false;
+    private boolean hitWithSword = false;
+    private int lives = 5;
+    private boolean getHitted = false;
+    private int currLives;
+    private boolean open = false;
+    
+    //load hero's image and store them in arrays
+    public Hero(){
+        for (int id = 0; id < idle.length; id++){
+            idle[id] = new GreenfootImage("Idle" + id + ".png");
+            idle[id].scale(100,100);
+            idle_mirror[id] = new GreenfootImage("Idle" + id + ".png");
+            idle_mirror[id].scale(100,100);
+            idle_mirror[id].mirrorHorizontally();
+        }
+        for (int l = 0; l < left.length; l++){
+            left[l] = new GreenfootImage("Left" + l + ".png");
+            left[l].scale(100,100);
+        }
+        for (int r = 0; r < right.length; r++){
+            right[r] = new GreenfootImage("Right" + r + ".png");
+            right[r].scale(100,100);
+        }
+        for (int lk = 0; lk < leftAttack.length; lk++){
+            leftAttack[lk] = new GreenfootImage("LeftAttack" + lk + ".png");
+            leftAttack[lk].scale(100,100);
+        }
+        for (int rk = 0; rk < rightAttack.length; rk++){
+            rightAttack[rk] = new GreenfootImage("RightAttack" + rk + ".png");
+            rightAttack[rk].scale(100,100);
+        }
+        setImage(idle[0]);
+    }
+
+    public void act() 
+    {
+        // Add your action code here.
+        //call jump method only when SPACE is pressed and 
+        //has not jumped recently.
+        if( Greenfoot.isKeyDown("space") && hasJumped == false){
+            jump();
+        }
+        checkOnGround();
+        active();
+        moveLeft();
+        moveRight();
+        attack();
+        reachPortal();
+        checkSurrounding();
+        hitMonster();
+        intoHiddenWorld();
+        openChest();
+    }
+    //makes the character animated when standing.
+    public void active(){
+        active = active + 1;
+        if (active == delayActive){
+            actImg++;
+            if (actImg >= idle.length){
+                actImg = 0;
+            }
+            // if the actor faces left, keeps him left whether
+            //a key is pressed or not.
+            if (faceLeft == true){
+                setImage(idle_mirror[actImg]);
+            }
+            else{
+                setImage(idle[actImg]);
+            }
+            active = 0;
+        }
+    }
+    //makes the animation of moving left.
+    public void moveLeft(){
+        if (Greenfoot.isKeyDown("left")){
+            moveLeft = moveLeft + 1;
+            active = active - 1;
+            setLocation(getX()-vX,getY());
+            faceLeft = true;
+            if (moveLeft == delayLeft){
+                leftImg++;
+                if (leftImg >= left.length){
+                    leftImg = 0;
+                }
+                setImage(left[leftImg]);
+                moveLeft = 0;
+            }
+        }
+    }
+    //makes the animation of moving right.
+    public void moveRight(){
+        if (Greenfoot.isKeyDown("right")){
+            moveRight = moveRight + 1;
+            active = active - 1;
+            setLocation(getX()+vX,getY());
+            faceLeft = false;
+            if (moveRight == delayRight){
+                rightImg++;
+                if (rightImg >= right.length){
+                    rightImg = 0;
+                }
+                setImage(right[rightImg]);
+                moveRight = 0;
+            }
+        }
+    }
+    //attack method makes the actor attacks left or right 
+    //based on the key pressed
+    public void attack(){
+        if(Greenfoot.isKeyDown("e")){
+            ePressed = true;
+        }
+        if(Greenfoot.isKeyDown("q")){
+            qPressed = true;
+        }
+        //animation of right attack
+        if(ePressed == true){
+            active = active - 1;
+            if(rightAttackImg < rightAttack.length){
+                if (attackRight == delayAttackRight){
+                    setImage(rightAttack[rightAttackImg]);
+                    rightAttackImg++;
+                    attackRight = 0;
+                }
+                else{
+                    attackRight++;
+                }
+            }
+            else{
+                rightAttackImg = 0;
+                ePressed = false;
+            }
+            Monster m = (Monster)getOneIntersectingObject(Monster.class);
+            //if the actor hits a monster with sword, update score
+            //depend on its type.
+            if (m != null){
+                removeTouching(Monster.class);
+                ((Level0) getWorld()).updateScore(m.score());
+                //to use to determine if he hits monster with sword(gain score)
+                //or without(lose life).
+                hitWithSword = true;
+            }
+        }
+        if(qPressed == true){
+            active = active - 1;
+            if(leftAttackImg < leftAttack.length){
+                if (attackLeft == delayAttackLeft){
+                    setImage(leftAttack[leftAttackImg]);
+                    leftAttackImg += 2;
+                    attackLeft = 0;
+                }
+                else{
+                    attackLeft++;
+                }
+            }
+            else{
+                leftAttackImg = 0;
+                qPressed = false;
+            }
+            Monster m = (Monster)getOneIntersectingObject(Monster.class);
+            if (m != null){
+                removeTouching(Monster.class);
+                ((Level0) getWorld()).updateScore(m.score());
+                hitWithSword = true;
+            }
+        }
+
+    }
+    //returns a boolean to tell if the actor is on the floor
+    public boolean touchingFloor(){
+        Floor f = (Floor)getOneObjectAtOffset(0,getImage().getHeight()/2,Floor.class);
+        if (f != null){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    //create 'gravity', to make actor always fall
+    public void fall(){
+        setLocation(getX(),getY()+vDrop);
+        vDrop = vDrop + acceleration;
+    }
+    //but if he touches floor, make him not fall
+    public void checkOnGround(){
+        if(touchingFloor()){
+            vDrop = 0;
+            hasJumped = false;
+        }
+        else{
+            fall();
+        }
+    }
+    //change the drop speed to make the actor jump upward, 
+    //make him not jump again using the boolean
+    public void jump(){
+        vDrop = -vJump;
+        hasJumped = true;
+        fall();
+    }
+    //when the actor touches the portal, set to next level
+    public void reachPortal(){
+        if (isTouching(Portal.class) && getY() < 100){
+            Greenfoot.setWorld(new Level1());
+            level1 = true;
+        }
+    }
+    //when the actor is close to the portal, make the portal appear
+    public void checkSurrounding(){
+        List<Portal>p = getObjectsInRange(150,Portal.class);
+        for(Portal po : p){
+            po.increaseTrans();  
+        }
+    }
+    //when the actor is trapped in Level1, disable him
+    public void blocked(){
+        vJump = 0;
+        vX = 0;
+        ePressed = false;
+        qPressed = false;
+    }
+    //decrease actor's life by one if he hits the monster 
+    //without using a sword.
+    public void hitMonster(){
+        Monster m = (Monster)getOneIntersectingObject(Monster.class);
+        if (m != null && hitWithSword == false){
+            removeTouching(Monster.class);
+            lives = lives - 1;
+            getHitted = true;
+        }
+        currLives = lives;
+    }
+    //An accessor for Life class to change the display 
+    public int lives(){
+        if (level1 == true){
+            return 0;
+        }
+        else{
+            return currLives;
+        }
+    }
+    //set the world to the hidden world if the actor meets the requirement
+    public void intoHiddenWorld(){
+        if (getX() > 550 && getY() >398){
+            Greenfoot.setWorld(new HiddenWorld());
+        }
+    }
+    //if the actor has a key and is touching the chest, tell Chest 
+    //class to swtich image to opened chest
+    public void openChest(){
+        Key k = (Key)getOneIntersectingObject(Key.class);
+        Chest c = (Chest)getOneIntersectingObject(Chest.class);
+        if (k!= null && c !=null){
+            open = true;
+        }
+    }
+    //an accessor for Chest class to determine whether open the chest or not
+    public boolean open(){
+        return open;
+    }
+
+}
